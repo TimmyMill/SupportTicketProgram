@@ -43,9 +43,33 @@ public class TicketManager {
     }
 
     protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
-        //What to do here? Need to delete ticket, but how do we identify the ticket to delete?
-        //TODO implement this method
-        System.out.println("Delete tickets method called");
+        printAllTickets(ticketQueue);   //display list for user
+
+        if (ticketQueue.size() == 0) {    //no tickets!
+            System.out.println("No tickets to delete!\n");
+            return;
+        }
+
+        Scanner deleteScanner = new Scanner(System.in);
+        System.out.println("Enter ID of ticket to delete");
+        int deleteID = deleteScanner.nextInt();
+
+        //Loop over all tickets. Delete the one with this ticket ID
+        boolean found = false;
+        for (Ticket ticket : ticketQueue) {
+            if (ticket.getTicketID() == deleteID) {
+                found = true;
+                ticketQueue.remove(ticket);
+                System.out.println(String.format("Ticket %d deleted", deleteID));
+                break; //don't need loop any more.
+            }
+        }
+        if (!found) {
+            System.out.println("Ticket ID not found, no ticket deleted");
+            //TODO – re-write this method to ask for ID again if not found
+        }
+        printAllTickets(ticketQueue);  //print updated list
+
     }
 
     /* Move the adding ticket code to a method */
@@ -55,7 +79,7 @@ public class TicketManager {
         boolean moreProblems = true;
         String description;
         String reporter;
-        
+
         /* Let's assume all tickets are created today, for testing. We can change this later if needed */
         Date dateReported = new Date(); //Default constructor creates date with current date/time
         int priority;
