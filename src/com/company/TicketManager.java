@@ -93,7 +93,8 @@ public class TicketManager {
             priority = Integer.parseInt(sc.nextLine());
 
             Ticket t = new Ticket(description, priority, reporter, dateReported);
-            ticketQueue.add(t);
+            //ticketQueue.add(t);
+            addTicketInPriorityOrder(ticketQueue, t);
 
             /* To test, let's print out all of the currently stored tickets */
             printAllTickets(ticketQueue);
@@ -106,6 +107,35 @@ public class TicketManager {
         }
 
     }
+    protected static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket){
+
+        /* Logic: assume the list is either empty or sorted */
+
+        if (tickets.size() == 0 ) {//Special case - if list is empty, add ticket and return
+            tickets.add(newTicket);
+            return;
+        }
+
+        /* Tickets with the HIGHEST priority number go at the front of the list. (e.g. 5=server on fire) */
+        /* Tickets with the LOWEST value of their priority number (so the lowest priority) go at the end */
+
+        int newTicketPriority = newTicket.getPriority();
+        for (int x = 0; x < tickets.size() ; x++) {    //use a regular for loop so we know which element we are looking at
+
+            //if newTicket is higher or equal priority than the this element, add it in front of this one, and return
+            if (newTicketPriority >= tickets.get(x).getPriority()) {
+                tickets.add(x, newTicket);
+                return;
+            }
+        }
+
+        /*
+        Will only get here if the ticket is not added in the loop
+        If that happens, it must be lower priority than all other tickets. So, add to the end.
+        */
+        tickets.addLast(newTicket);
+    }
+
     protected static void printAllTickets(LinkedList<Ticket> tickets) {
         System.out.println(" ------- All open tickets ----------");
 
