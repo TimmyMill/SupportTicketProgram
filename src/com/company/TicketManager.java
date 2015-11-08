@@ -52,9 +52,16 @@ public class TicketManager {
 
         Scanner deleteScanner = new Scanner(System.in);
         System.out.println("Enter ID of ticket to delete");
-        int deleteID = deleteScanner.nextInt();
+        String str = deleteScanner.next(); //take user input as a string since it's easier to validate
 
-        //Loop over all tickets. Delete the one with this ticket ID
+        /* If user enters anything other than a positive number, ask for input again */
+        while (!str.matches("[0-9]+")) {
+            System.out.println("Please enter a positive number");
+            str = deleteScanner.next();
+        }
+        int deleteID = Integer.parseInt(str); //parse user input from a string to an int
+
+        /* Loop over all tickets. Delete the one with this ticket ID */
         boolean found = false;
         for (Ticket ticket : ticketQueue) {
             if (ticket.getTicketID() == deleteID) {
