@@ -43,10 +43,18 @@ public class TicketManager {
                     //delete a ticket by issue
                     System.out.println("Enter keyword to search for");
                     searchTicketList(ticketQueue, task);
+
+                    //option to delete a ticket
+                    System.out.println("Delete ticket?\nY or N");
+                    String delete = scan.nextLine();
+                    if (delete.equalsIgnoreCase("Y")) {
+                        deleteTicket(ticketQueue);
+                    }
+
                     break;
                 }
                 case 4: {
-                    //search a ticket by name
+                    //search for a ticket by reporter's name
                     System.out.println("Enter name to search for");
                     searchTicketList(ticketQueue, task);
                     break;
@@ -77,6 +85,7 @@ public class TicketManager {
             return;
         }
 
+        System.out.println("Enter ticket ID");
         int deleteID = validateIntInput();
 
         /* Loop over all tickets. Delete the one with this ticket ID */
