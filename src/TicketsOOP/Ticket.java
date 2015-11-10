@@ -1,4 +1,4 @@
-package com.company;
+package TicketsOOP;
 
 import java.util.Date;
 
@@ -28,12 +28,20 @@ public class Ticket {
         staticTicketIDCounter++;
     }
 
-    protected int getPriority() {
-        return priority;
+    public String getDescription() {
+        return description;
+    }
+
+    public String getReporter() {
+        return reporter;
     }
 
     protected int getTicketID() {
         return ticketID;
+    }
+
+    protected int getPriority() {
+        return priority;
     }
 
     /* Called automatically if a Ticket object is an argument to System.out.println */
