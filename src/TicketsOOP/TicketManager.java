@@ -167,37 +167,52 @@ public class TicketManager {
 
         System.out.println(" ------- End of ticket list ----------");
     }
-    
+
     protected static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue, int task) {
         LinkedList<Ticket> matchesSearchString = new LinkedList<>();
+        boolean found = false;
         scan = new Scanner(System.in);
         String str = scan.nextLine();
 
         /* Loop over all tickets. Add the ones that have a particular keyword in them to a new list */
         for (Ticket ticket : ticketQueue) {
             switch (task) {
+
+                /* Searches description */
                 case 3: {
-                    // Searches description
-                    if (ticket.getDescription().contains(str)) {
+                    if (ticket.getDescription().toLowerCase().contains(str.toLowerCase())) {
+                    //get description from ticket, convert to lowercase and check if it contains the string
+
                         matchesSearchString.add(ticket);
+                        found = true;
                         continue;
                     }
                     break;
                 }
+
+                /* Searches names */
                 case 4: {
-                    // Searches names
-                    if (ticket.getReporter().contains(str)) {
+                    if (ticket.getReporter().toLowerCase().contains(str.toLowerCase())) {
+                    //get reporter from ticket, convert to lowercase and check if it contains the string
+
                         matchesSearchString.add(ticket);
+                        found = true;
                         continue;
                     }
                     break;
-                }
-                default: {
-                    System.out.println("No matches found");
                 }
             }
         }
-        printAllTickets(matchesSearchString);
+
+        /* If no matches are found, print that nothing was found.
+         * Otherwise, print the list of tickets that match. */
+        if (!found) {
+            System.out.println("No matches found");
+        }
+        else {
+            printAllTickets(matchesSearchString);
+        }
+
         return matchesSearchString;
     }
 
