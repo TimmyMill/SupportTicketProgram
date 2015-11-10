@@ -7,7 +7,8 @@ public class Ticket {
     private String reporter; //Stores person or department who reported issue
     private String description;
     private Date dateReported;
-
+    private Date dateResolved;
+    private String resolution;
     /*
     STATIC Counter - accessible to all Ticket objects.
     If any Ticket object modifies this counter, all Ticket objects will have the modified value
@@ -28,27 +29,25 @@ public class Ticket {
         staticTicketIDCounter++;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getReporter() {
-        return reporter;
-    }
-
-    protected int getTicketID() {
-        return ticketID;
-    }
-
-    protected int getPriority() {
-        return priority;
-    }
+    /* Setters & Getters */
+    public String getDescription() {return description;}
+    protected int getPriority() {return priority;}
+    public String getReporter() {return reporter;}
+    public Date getDateReported() {return dateReported;}
+    protected int getTicketID() {return ticketID;}
+    public Date getDateResolved() {return dateResolved;}
+    public void setDateResolved(Date dateResolved) {this.dateResolved = dateResolved;}
+    public String getResolution() {return resolution;}
+    public void setResolution(String resolution) {this.resolution = resolution;}
 
     /* Called automatically if a Ticket object is an argument to System.out.println */
     public String toString(){
-        return("ID= " + this.ticketID + " Issued: " + this.description + " Priority: " +
-                this.priority + " Reported by: "
-                + this.reporter + " Reported on: " + this.dateReported);
+        String resolutionString = (this.resolution == null) ? "Open Ticket" : this.resolution;
+        String dateResolvedString = (this.dateResolved == null) ? "Open Ticket" : this.dateResolved.toString();
+
+        return("ID= " + this.ticketID + " Issue: " + this.description + " Priority: " + this.priority +
+                " Reported by: " + this.reporter + " Reported on: " + this.dateReported) +
+                " Resolution: " + resolutionString + " Date Resolved: " + dateResolvedString;
     }
 
 }

@@ -11,6 +11,7 @@ public class TicketManager {
     public static void main(String[] args) {
 
         LinkedList<Ticket> ticketQueue = new LinkedList<>();
+        LinkedList<Ticket> resolvedTickets = new LinkedList<>();
 
         scan = new Scanner(System.in);
 
@@ -36,7 +37,7 @@ public class TicketManager {
                 case 2: {
                     //delete a ticket by ID
                     System.out.println("Enter ID of ticket to delete");
-                    deleteTicket(ticketQueue);
+                    resolveTicket(ticketQueue, resolvedTickets);
                     break;
                 }
                 case 3: {
@@ -48,7 +49,7 @@ public class TicketManager {
                     System.out.println("Delete ticket?\nY or N");
                     String delete = scan.nextLine();
                     if (delete.equalsIgnoreCase("Y")) {
-                        deleteTicket(ticketQueue);
+                        resolveTicket(ticketQueue, resolvedTickets);
                     }
 
                     break;
@@ -78,30 +79,41 @@ public class TicketManager {
         scan.close();
     }
 
-    protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
+//    protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
+    protected static void resolveTicket(LinkedList<Ticket> ticketQueue, LinkedList<Ticket> resolvedTickets) {
+        scan = new Scanner(System.in);
 
         if (ticketQueue.size() == 0) {    //no tickets!
             System.out.println("No tickets to delete!\n");
             return;
         }
-
         System.out.println("Enter ticket ID");
-        int deleteID = validateIntInput();
 
-        /* Loop over all tickets. Delete the one with this ticket ID */
+        int deleteID = validateIntInput();
+    /* Loop over all tickets. Delete the one with this ticket ID */
         boolean found = false;
         for (Ticket ticket : ticketQueue) {
             if (ticket.getTicketID() == deleteID) {
                 found = true;
-                ticketQueue.remove(ticket);
+
+                /* Resolve ticket */
+                System.out.println("Enter how the problem was fixed or resolved");
+                String resolution = scan.nextLine();
+
+                ticket.setResolution(resolution);
+                ticket.setDateResolved(new Date());
+                resolvedTickets.add(ticket);
+
+                ticketQueue.remove(ticket); //remove from queue
                 System.out.println(String.format("Ticket %d deleted", deleteID));
                 break; //don't need loop any more.
             }
         }
         if (!found) {
             System.out.println("Ticket ID not found, no ticket deleted");
-            deleteTicket(ticketQueue);
+            resolveTicket(ticketQueue, resolvedTickets);
         }
+
         printAllTickets(ticketQueue);  //print updated list
     }
 
