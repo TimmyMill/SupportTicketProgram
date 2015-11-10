@@ -36,20 +36,19 @@ public class TicketManager {
                 case 2: {
                     //delete a ticket by ID
                     System.out.println("Enter ID of ticket to delete");
-                    int deleteID = validateIntInput();
                     deleteTicket(ticketQueue);
                     break;
                 }
                 case 3: {
                     //delete a ticket by issue
                     System.out.println("Enter keyword to search for");
-                    searchTicketList(ticketQueue);
+                    searchTicketList(ticketQueue, task);
                     break;
                 }
                 case 4: {
                     //search a ticket by name
                     System.out.println("Enter name to search for");
-                    searchTicketList(ticketQueue);
+                    searchTicketList(ticketQueue, task);
                     break;
                 }
                 case 5: {
@@ -168,31 +167,38 @@ public class TicketManager {
 
         System.out.println(" ------- End of ticket list ----------");
     }
-
-    protected static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue) {
-        LinkedList<Ticket> matches = new LinkedList<>();
+    
+    protected static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue, int task) {
+        LinkedList<Ticket> matchesSearchString = new LinkedList<>();
         scan = new Scanner(System.in);
         String str = scan.nextLine();
 
         /* Loop over all tickets. Add the ones that have a particular keyword in them to a new list */
-        boolean found = false;
         for (Ticket ticket : ticketQueue) {
-            // Searches description
-            if (ticket.getDescription().contains(str)) {
-                found = true;
-                matches.add(ticket);
-            }
-            // Searches names
-            if (ticket.getReporter().contains(str)) {
-                found = true;
-                matches.add(ticket);
+            switch (task) {
+                case 3: {
+                    // Searches description
+                    if (ticket.getDescription().contains(str)) {
+                        matchesSearchString.add(ticket);
+                        continue;
+                    }
+                    break;
+                }
+                case 4: {
+                    // Searches names
+                    if (ticket.getReporter().contains(str)) {
+                        matchesSearchString.add(ticket);
+                        continue;
+                    }
+                    break;
+                }
+                default: {
+                    System.out.println("No matches found");
+                }
             }
         }
-        if (!found) {
-            System.out.println("No matches found");
-        }
-        printAllTickets(matches);
-        return matches;
+        printAllTickets(matchesSearchString);
+        return matchesSearchString;
     }
 
     /* Validation Method */
