@@ -87,10 +87,11 @@ public class TicketManager {
             System.out.println("No tickets to delete!\n");
             return;
         }
-        System.out.println("Enter ticket ID");
 
+        System.out.println("Enter ID of ticket to delete");
         int deleteID = validateIntInput();
-    /* Loop over all tickets. Delete the one with this ticket ID */
+
+        /* Loop over all tickets. Delete the one with this ticket ID */
         boolean found = false;
         for (Ticket ticket : ticketQueue) {
             if (ticket.getTicketID() == deleteID) {
@@ -106,6 +107,7 @@ public class TicketManager {
 
                 ticketQueue.remove(ticket); //remove from queue
                 System.out.println(String.format("Ticket %d deleted", deleteID));
+                printAllTickets(ticketQueue);  //print updated list
                 break; //don't need loop any more.
             }
         }
@@ -113,8 +115,6 @@ public class TicketManager {
             System.out.println("Ticket ID not found, no ticket deleted");
             resolveTicket(ticketQueue, resolvedTickets);
         }
-
-        printAllTickets(ticketQueue);  //print updated list
     }
 
     /* Move the adding ticket code to a method */
@@ -150,8 +150,8 @@ public class TicketManager {
                 moreProblems = false;
             }
         }
-
     }
+    
     protected static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket){
 
         /* Logic: assume the list is either empty or sorted */
