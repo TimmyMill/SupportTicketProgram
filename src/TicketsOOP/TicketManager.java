@@ -1,5 +1,8 @@
 package TicketsOOP;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -7,11 +10,11 @@ import java.util.Scanner;
 public class TicketManager {
 
     protected static Scanner scan;
+    protected static LinkedList<Ticket> resolvedTickets = new LinkedList<>();
 
     public static void main(String[] args) {
 
         LinkedList<Ticket> ticketQueue = new LinkedList<>();
-        LinkedList<Ticket> resolvedTickets = new LinkedList<>();
 
         scan = new Scanner(System.in);
 
@@ -37,7 +40,7 @@ public class TicketManager {
                 case 2: {
                     //delete a ticket by ID
                     System.out.println("Enter ID of ticket to delete");
-                    resolveTicket(ticketQueue, resolvedTickets);
+                    resolveTicket(ticketQueue);
                     break;
                 }
                 case 3: {
@@ -49,7 +52,7 @@ public class TicketManager {
                     System.out.println("Delete ticket?\nY or N");
                     String delete = scan.nextLine();
                     if (delete.equalsIgnoreCase("Y")) {
-                        resolveTicket(ticketQueue, resolvedTickets);
+                        resolveTicket(ticketQueue);
                     }
 
                     break;
@@ -67,6 +70,7 @@ public class TicketManager {
                 }
                 case 6: {
                     //Quit. Future prototype may want to save all tickets to a file
+                    writeToFile(ticketQueue);
                     quit = true;
                     System.out.println("Quitting program");
                     break;
@@ -80,7 +84,7 @@ public class TicketManager {
     }
 
 //    protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
-    protected static void resolveTicket(LinkedList<Ticket> ticketQueue, LinkedList<Ticket> resolvedTickets) {
+    protected static void resolveTicket(LinkedList<Ticket> ticketQueue) {
         scan = new Scanner(System.in);
 
         if (ticketQueue.size() == 0) {    //no tickets!
@@ -113,7 +117,7 @@ public class TicketManager {
         }
         if (!found) {
             System.out.println("Ticket ID not found, no ticket deleted");
-            resolveTicket(ticketQueue, resolvedTickets);
+            resolveTicket(ticketQueue);
         }
     }
 
@@ -235,6 +239,30 @@ public class TicketManager {
         }
 
         return matchesSearchString;
+    }
+
+    protected static void writeToFile(LinkedList<Ticket> ticketQueue) {
+        /* Write open tickets to file */
+        try ( BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt")) ) {
+
+            for (Ticket u : ticketQueue) {
+                unresolved.write(u.toString() + "\n");
+            }
+            unresolved.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /* Write resolved tickets to file */
+        try ( BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of" + new Date() + ".txt")) ) {
+            for (Ticket r : resolvedTickets) {
+                resolved.write(r.toString() + "\n");
+            }
+            resolved.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /* Validation Method */
