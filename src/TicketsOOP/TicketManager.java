@@ -254,7 +254,7 @@ public class TicketManager {
         }
 
         /* Write resolved tickets to file */
-        try ( BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of" + new Date() + ".txt")) ) {
+        try ( BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of_" + new Date() + ".txt")) ) {
             for (Ticket r : resolvedTickets) {
                 resolved.write(r.toString() + "\n");
             }
