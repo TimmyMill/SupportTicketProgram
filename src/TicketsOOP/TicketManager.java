@@ -30,19 +30,22 @@ public class TicketManager {
             int task = validateIntInput();
 
             switch (task) {
+                /* Create a ticket */
                 case 1: {
                     //Call addTickets, which will let us enter any number of new tickets
                     addTickets(ticketQueue);
                     break;
                 }
+
+                /* Delete a ticket by ID */
                 case 2: {
-                    //delete a ticket by ID
-                    System.out.println("Enter ID of ticket to delete");
+                    printAllTickets(ticketQueue);
                     resolveTicket(ticketQueue);
                     break;
                 }
+
+                /* Delete a ticket by issue */
                 case 3: {
-                    //delete a ticket by issue
                     System.out.println("Enter keyword to search for");
                     searchTicketList(ticketQueue, task);
 
@@ -55,24 +58,30 @@ public class TicketManager {
 
                     break;
                 }
+
+                /* Search for a ticket by reporter's name */
                 case 4: {
-                    //search for a ticket by reporter's name
                     System.out.println("Enter name to search for");
                     searchTicketList(ticketQueue, task);
                     break;
                 }
+
+                /* Print all tickets */
                 case 5: {
-                    //print all tickets
                     printAllTickets(ticketQueue);
                     break;
                 }
+
+                /* Quit. Saves all tickets to a file */
                 case 6: {
-                    //Quit. Future prototype may want to save all tickets to a file
                     writeToFile(ticketQueue);
                     quit = true;
                     System.out.println("Quitting program");
                     break;
                 }
+
+                /* Default. If user enters a number that doesn't correspond to a menu option,
+                   they are prompted to enter a number from the menu */
                 default: {
                     System.out.println("Please enter a number from the menu above");
                 }
@@ -81,7 +90,9 @@ public class TicketManager {
         scan.close();
     }
 
-//    protected static void deleteTicket(LinkedList<Ticket> ticketQueue) {
+    /* Deletes a ticket by using ticket ID. If ticket is deleted, it is assumed that problem was resolved.
+     * Will ask for a resolution and set the resolution date the the current date.
+     * Then it adds the ticket to a new list of resolved tickets and removes from the ticket queue.  */
     protected static void resolveTicket(LinkedList<Ticket> ticketQueue) {
         scan = new Scanner(System.in);
 
@@ -97,7 +108,7 @@ public class TicketManager {
         boolean found = false;
         for (Ticket ticket : ticketQueue) {
             if (ticket.getTicketID() == deleteID) {
-                found = true;
+                found = true; //change boolean value found to true if ticket is found
 
                 /* Resolve ticket */
                 System.out.println("Enter how the problem was fixed or resolved");
@@ -113,9 +124,10 @@ public class TicketManager {
                 break; //don't need loop any more.
             }
         }
-        if (!found) {
+
+        if (!found) { //if ticket isn't found, print that it wasn't and rerun method
             System.out.println("Ticket ID not found, no ticket deleted");
-            resolveTicket(ticketQueue);
+            resolveTicket(ticketQueue); //reruns method
         }
     }
 
@@ -175,14 +187,12 @@ public class TicketManager {
                 return;
             }
         }
-
-        /*
-        Will only get here if the ticket is not added in the loop
-        If that happens, it must be lower priority than all other tickets. So, add to the end.
-        */
+        /* Will only get here if the ticket is not added in the loop.
+         * If that happens, it must be lower priority than all other tickets. So, add to the end. */
         tickets.addLast(newTicket);
     }
 
+    /* Prints all tickets */
     protected static void printAllTickets(LinkedList<Ticket> tickets) {
         System.out.println(" ------- All open tickets ----------");
 
@@ -191,24 +201,26 @@ public class TicketManager {
         System.out.println(" ------- End of ticket list ----------");
     }
 
+    /* Searches through the ticket queue and looks for any tickets that match a user entered keyword.
+     * If any matches are found, a list containing those tickets is returned. */
     protected static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue, int task) {
-        LinkedList<Ticket> matchesSearchString = new LinkedList<>();
+        LinkedList<Ticket> matchesSearchString = new LinkedList<>(); //list to hold tickets that match keyword
         boolean found = false;
         scan = new Scanner(System.in);
         String str = scan.nextLine();
 
         /* Loop over all tickets. Add the ones that have a particular keyword in them to a new list */
         for (Ticket ticket : ticketQueue) {
-            switch (task) {
+            switch (task) { //Switch looks uses int value of task to decide which case to enter
 
                 /* Searches description */
                 case 3: {
                     if (ticket.getDescription().toLowerCase().contains(str.toLowerCase())) {
                     //get description from ticket, convert to lowercase and check if it contains the string
 
-                        matchesSearchString.add(ticket);
-                        found = true;
-                        continue;
+                        matchesSearchString.add(ticket); //adds matching ticket to list
+                        found = true; //boolean found is changed to true
+                        continue; //we use a continue to keep checking the rest of the list
                     }
                     break;
                 }
@@ -218,9 +230,9 @@ public class TicketManager {
                     if (ticket.getReporter().toLowerCase().contains(str.toLowerCase())) {
                     //get reporter from ticket, convert to lowercase and check if it contains the string
 
-                        matchesSearchString.add(ticket);
-                        found = true;
-                        continue;
+                        matchesSearchString.add(ticket); //adds matching ticket to list
+                        found = true; //boolean found is changed to true
+                        continue; //we use a continue to keep checking the rest of the list
                     }
                     break;
                 }
@@ -239,9 +251,13 @@ public class TicketManager {
         return matchesSearchString;
     }
 
+    /* Reads in the open tickets text file to make ticket objects that were "saved" from the last session */
     protected static void readFile(LinkedList<Ticket> ticketQueue) {
         File file = new File("open_tickets.txt");
         DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+        /* Used the idea from the site below to format the Date because a lot of Date's methods are deprecated.
+         * http://stackoverflow.com/questions/4216745/java-string-to-date-conversion */
+
 
         if (file.exists()) { //checks to make sure file exists before trying to read it
 
@@ -249,6 +265,12 @@ public class TicketManager {
             try (BufferedReader br = new BufferedReader(new FileReader("open_tickets.txt")))
             {
                 String line = br.readLine();
+
+                /* This loop will read each line, one at a time until the end of the file.
+                 * Information stored in each line is pulled out by using substrings to "capture" that piece of information.
+                 * The indexOf String method is used to mark where to start and end each substring.
+                 * The pieces that make up a ticket object are pulled from each line and used to create new tickets */
+
                 while (line != null) {
 
                     //description
@@ -269,7 +291,7 @@ public class TicketManager {
 
                     //Create tickets from open tickets text file
                     Ticket t = new Ticket(description, priority, reporter, dateReported);
-                    t.setTicketID(ticketID);
+                    t.setTicketID(ticketID); //sets the ticket ID when object is created so that it doesn't start over from 1
                     addTicketInPriorityOrder(ticketQueue, t);
 
                     line = br.readLine();
@@ -285,7 +307,6 @@ public class TicketManager {
     protected static void writeToFile(LinkedList<Ticket> ticketQueue) {
         DateFormat dateFormat = new SimpleDateFormat("MMMM_d_yyyy", Locale.ENGLISH); //used to format the date for resolved tickets filename
         Date date = new Date();
-        //http://stackoverflow.com/questions/4216745/java-string-to-date-conversion
 
         /* Write open tickets to file */
         try (BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt")))
