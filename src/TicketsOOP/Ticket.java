@@ -42,6 +42,7 @@ public class Ticket {
     public void setDateResolved(Date dateResolved) {this.dateResolved = dateResolved;}
     public String getResolution() {return resolution;}
     public void setResolution(String resolution) {this.resolution = resolution;}
+    public void setTicketID(int ticketID) {this.ticketID = ticketID;}
 
     /* Called automatically if a Ticket object is an argument to System.out.println */
     public String toString(){

@@ -263,8 +263,13 @@ public class TicketManager {
                     //dateReported
                     Date dateReported = dateFormat.parse(line.substring(line.indexOf("Reported on:") + 13, line.indexOf("Resolution:") - 2));
 
+                    //ticketID
+                    int ticketID = Integer.parseInt(line.substring(4, line.indexOf(",")));
+                    System.out.println(ticketID);
+
                     //Create tickets from open tickets text file
                     Ticket t = new Ticket(description, priority, reporter, dateReported);
+                    t.setTicketID(ticketID);
                     addTicketInPriorityOrder(ticketQueue, t);
 
                     line = br.readLine();
@@ -280,6 +285,7 @@ public class TicketManager {
     protected static void writeToFile(LinkedList<Ticket> ticketQueue) {
         DateFormat dateFormat = new SimpleDateFormat("MMMM_d_yyyy", Locale.ENGLISH); //used to format the date for resolved tickets filename
         Date date = new Date();
+        //http://stackoverflow.com/questions/4216745/java-string-to-date-conversion
 
         /* Write open tickets to file */
         try (BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt")))
