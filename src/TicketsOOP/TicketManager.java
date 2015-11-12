@@ -241,13 +241,13 @@ public class TicketManager {
 
     protected static void readFile(LinkedList<Ticket> ticketQueue) {
         File file = new File("open_tickets.txt");
-        ArrayList<String[]> list = new ArrayList<>();
         DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
 
         if (file.exists()) { //checks to make sure file exists before trying to read it
 
             /* Read from open_tickets.txt file */
-            try (BufferedReader br = new BufferedReader(new FileReader("open_tickets.txt"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("open_tickets.txt")))
+            {
                 String line = br.readLine();
                 while (line != null) {
 
@@ -261,21 +261,17 @@ public class TicketManager {
                     String reporter = line.substring(line.indexOf("Reported by:") + 13, line.indexOf("Reported on:") - 2);
 
                     //dateReported
-                    Date dateReported = null;
-                    try {
-                        dateReported = dateFormat.parse(line.substring(line.indexOf("Reported on:") + 13, line.indexOf("Resolution:") - 2));
-                        System.out.println(dateReported);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    Date dateReported = dateFormat.parse(line.substring(line.indexOf("Reported on:") + 13, line.indexOf("Resolution:") - 2));
 
+                    //Create tickets from open tickets text file
                     Ticket t = new Ticket(description, priority, reporter, dateReported);
                     addTicketInPriorityOrder(ticketQueue, t);
 
                     line = br.readLine();
                 }
                 br.close();
-            } catch (IOException e) {
+            }
+            catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
         }
@@ -286,29 +282,29 @@ public class TicketManager {
         Date date = new Date();
 
         /* Write open tickets to file */
-        try ( BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt", true)) ) {
-            //Creates open tickets file. If the file already exists, true is used to append to the end of it.
-
+        try (BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt")))
+        {
             for (Ticket u : ticketQueue) {
                 unresolved.write(u.toString() + "\n");
             }
             unresolved.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 
         /* Write resolved tickets to file */
-        if (resolvedTickets.size() > 0) {
-            //If there are no tickets in the resolvedTickets list, a file will not be created
+        if (resolvedTickets.size() > 0) { //If there are no tickets in the resolvedTickets list, a file will not be created
 
-            try (BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of_" + dateFormat.format(date) + ".txt", true))) {
-                //Creates resolved tickets file. If the file already exists, true is used to append to the end of it.
+            try (BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of_" + dateFormat.format(date) + ".txt", true)))
+            { //Creates resolved tickets file. If the file already exists, true is used to append to the end of it.
 
                 for (Ticket r : resolvedTickets) {
                     resolved.write(r.toString() + "\n");
                 }
                 resolved.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
