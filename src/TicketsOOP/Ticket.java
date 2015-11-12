@@ -1,6 +1,9 @@
 package TicketsOOP;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Ticket {
     private int priority;
@@ -42,12 +45,13 @@ public class Ticket {
 
     /* Called automatically if a Ticket object is an argument to System.out.println */
     public String toString(){
+        DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
         String resolutionString = (this.resolution == null) ? "Open Ticket" : this.resolution;
-        String dateResolvedString = (this.dateResolved == null) ? "Open Ticket" : this.dateResolved.toString();
+        String dateResolved = (this.dateResolved == null) ? "Open Ticket" : dateFormat.format(this.dateResolved);
 
-        return("ID= " + this.ticketID + " Issue: " + this.description + " Priority: " + this.priority +
-                " Reported by: " + this.reporter + " Reported on: " + this.dateReported) +
-                " Resolution: " + resolutionString + " Date Resolved: " + dateResolvedString;
+        return("ID= " + this.ticketID + ", Issue: " + this.description + ", Priority: " + this.priority +
+                ", Reported by: " + this.reporter + ", Reported on: " + dateFormat.format(this.dateReported) +
+                ", Resolution: " + resolutionString + ", Date Resolved: " + dateResolved);
     }
 
 }

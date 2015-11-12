@@ -1,11 +1,10 @@
 package TicketsOOP;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TicketManager {
 
@@ -15,10 +14,9 @@ public class TicketManager {
     public static void main(String[] args) {
 
         LinkedList<Ticket> ticketQueue = new LinkedList<>();
-
         scan = new Scanner(System.in);
-
         boolean quit = false;
+        readFile(ticketQueue);
 
         while(!quit){
 
@@ -241,9 +239,84 @@ public class TicketManager {
         return matchesSearchString;
     }
 
+    protected static void readFile(LinkedList<Ticket> ticketQueue) {
+        File file = new File("open_tickets.txt");
+        ArrayList<String[]> list = new ArrayList<>();
+        DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+
+        if (file.exists()) { //checks to make sure file exists before trying to read it
+
+            /* Read from open_tickets.txt file */
+            try (BufferedReader br = new BufferedReader(new FileReader("open_tickets.txt"))) {
+                String line = br.readLine();
+                while (line != null) {
+
+                    //description
+                    String description = line.substring(line.indexOf("Issue:") + 7, line.indexOf("Priority:") - 2);
+//                    System.out.println(description);
+
+                    //priority
+                    int priority = Integer.parseInt(line.substring(line.indexOf("Priority:") + 10, line.indexOf("Reported by:") - 2));
+//                    System.out.println(priority);
+
+                    //reporter
+                    String reporter = line.substring(line.indexOf("Reported by:") + 13, line.indexOf("Reported on:") - 2);
+//                    System.out.println(reporter);
+
+                    //dateReported
+                    Date dateReported = null;
+                    try {
+                        dateReported = dateFormat.parse(line.substring(line.indexOf("Reported on:") + 13, line.indexOf("Resolution:") - 2));
+                        System.out.println(dateReported);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    Ticket t = new Ticket(description, priority, reporter, dateReported);
+                    addTicketInPriorityOrder(ticketQueue, t);
+
+                    line = br.readLine();
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+//        for (String[] d : list) {
+//            String s = d[1];
+//            String desc = s.substring( (s.indexOf(":") + 2), s.length() );
+//            System.out.println(desc);
+//            int start = s.lastIndexOf(":");
+//            String desc = s.substring(start + 2, s.length());
+//            System.out.println(desc);
+//            String desc = d[1].replace(" Issue:", "");
+//            String pString = d[2].replace(" Priority: ", "");
+//            int p = Integer.parseInt(pString);
+//            String rep = d[3].replace(" Reported by: ", "");
+//            String dateString = d[4].replace(" Reported on: ", "");
+//            Date date = new Date(dateString);
+//
+//            System.out.println(desc);
+//            System.out.println(p);
+//            System.out.println(rep);
+//            System.out.println(date);
+//            System.out.println();
+
+//            for (String str : d) {
+//                System.out.println(str);
+//            }
+        }
+
+//    }
+
     protected static void writeToFile(LinkedList<Ticket> ticketQueue) {
+        DateFormat dateFormat = new SimpleDateFormat("MMMM_d_yyyy", Locale.ENGLISH); //used to format the date for resolved tickets filename
+        Date date = new Date();
+
         /* Write open tickets to file */
-        try ( BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt")) ) {
+        try ( BufferedWriter unresolved = new BufferedWriter(new FileWriter("open_tickets.txt", true)) ) {
+            //Creates open tickets file. If the file already exists, true is used to append to the end of it.
 
             for (Ticket u : ticketQueue) {
                 unresolved.write(u.toString() + "\n");
@@ -254,15 +327,19 @@ public class TicketManager {
         }
 
         /* Write resolved tickets to file */
-        try ( BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of_" + new Date() + ".txt")) ) {
-            for (Ticket r : resolvedTickets) {
-                resolved.write(r.toString() + "\n");
-            }
-            resolved.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (resolvedTickets.size() > 0) {
+            //If there are no tickets in the resolvedTickets list, a file will not be created
 
+            try (BufferedWriter resolved = new BufferedWriter(new FileWriter("resolved_tickets_as_of_" + dateFormat.format(date) + ".txt", true))) {
+                //Creates resolved tickets file. If the file already exists, true is used to append to the end of it.
+                for (Ticket r : resolvedTickets) {
+                    resolved.write(r.toString() + "\n");
+                }
+                resolved.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /* Validation Method */
