@@ -16,7 +16,18 @@ public class TicketManager {
         LinkedList<Ticket> ticketQueue = new LinkedList<>();
         scan = new Scanner(System.in);
         boolean quit = false;
-        readFile(ticketQueue);
+        readFile(ticketQueue); //read file in when program starts
+
+        if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
+            int max = 0;
+            for (Ticket t : ticketQueue) {
+                if (t.getTicketID() > max) {
+                    max = t.getTicketID();
+                }
+            }
+            Ticket.setStaticTicketIDCounter(max + 1);
+        }
+
 
         while(!quit){
 
@@ -154,9 +165,9 @@ public class TicketManager {
             /* If there are already open tickets that were pulled in and created from the text file, the ticket queue will not be empty.
              * All new tickets should start from the last ticket in the queue's ID and not 1 */
 
-            if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
-                Ticket.setStaticTicketIDCounter(ticketQueue.peekLast().getTicketID() + 1);
-            }
+//            if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
+//                Ticket.setStaticTicketIDCounter(ticketQueue.peekLast().getTicketID() + 1);
+//            }
 ////                t.setTicketID(ticketQueue.peekLast().getTicketID() + 1);
 //                Ticket t = new Ticket(description, priority, reporter, dateReported);
 //                addTicketInPriorityOrder(ticketQueue, t);
@@ -272,7 +283,6 @@ public class TicketManager {
         DateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
         /* Used the idea from the site below to format the Date because a lot of Date's methods are deprecated.
          * http://stackoverflow.com/questions/4216745/java-string-to-date-conversion */
-
 
         if (file.exists()) { //checks to make sure file exists before trying to read it
 
