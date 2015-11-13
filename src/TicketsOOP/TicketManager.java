@@ -151,9 +151,23 @@ public class TicketManager {
             System.out.println("Enter priority of " + description);
             priority = validateIntInput();
 
-            Ticket t = new Ticket(description, priority, reporter, dateReported);
-            //ticketQueue.add(t);
-            addTicketInPriorityOrder(ticketQueue, t);
+            /* If there are already open tickets that were pulled in and created from the text file, the ticket queue will not be empty.
+             * All new tickets should start from the last ticket in the queue's ID and not 1 */
+
+            if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
+                Ticket.setStaticTicketIDCounter(ticketQueue.peekLast().getTicketID() + 1);
+            }
+////                t.setTicketID(ticketQueue.peekLast().getTicketID() + 1);
+//                Ticket t = new Ticket(description, priority, reporter, dateReported);
+//                addTicketInPriorityOrder(ticketQueue, t);
+//
+//            }
+//            else { //ticket queue is empty
+                Ticket t = new Ticket(description, priority, reporter, dateReported);
+                //ticketQueue.add(t);
+                addTicketInPriorityOrder(ticketQueue, t);
+
+//            }
 
             /* To test, let's print out all of the currently stored tickets */
             printAllTickets(ticketQueue);
@@ -202,7 +216,8 @@ public class TicketManager {
     }
 
     /* Searches through the ticket queue and looks for any tickets that match a user entered keyword.
-     * If any matches are found, a list containing those tickets is returned. */
+     * If any matches are found, a list containing those tickets is returned.
+     */
     protected static LinkedList<Ticket> searchTicketList(LinkedList<Ticket> ticketQueue, int task) {
         LinkedList<Ticket> matchesSearchString = new LinkedList<>(); //list to hold tickets that match keyword
         boolean found = false;
@@ -287,7 +302,6 @@ public class TicketManager {
 
                     //ticketID
                     int ticketID = Integer.parseInt(line.substring(4, line.indexOf(",")));
-                    System.out.println(ticketID);
 
                     //Create tickets from open tickets text file
                     Ticket t = new Ticket(description, priority, reporter, dateReported);

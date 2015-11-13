@@ -6,18 +6,18 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Ticket {
+
     private int priority;
     private String reporter; //Stores person or department who reported issue
     private String description;
     private Date dateReported;
     private Date dateResolved;
     private String resolution;
-    /*
-    STATIC Counter - accessible to all Ticket objects.
-    If any Ticket object modifies this counter, all Ticket objects will have the modified value
-    Make it private - only Ticket objects should have access
-    */
+
     private static int staticTicketIDCounter = 1;
+    /* STATIC Counter - accessible to all Ticket objects.
+     * If any Ticket object modifies this counter, all Ticket objects will have the modified value.
+     * Make it private - only Ticket objects should have access. */
 
     /* The ID for each ticket - instance variable. Each Ticket will have it's own ticketID variable */
     protected int ticketID;
@@ -43,6 +43,8 @@ public class Ticket {
     public String getResolution() {return resolution;}
     public void setResolution(String resolution) {this.resolution = resolution;}
     public void setTicketID(int ticketID) {this.ticketID = ticketID;}
+    public static int getStaticTicketIDCounter() {return staticTicketIDCounter;}
+    public static void setStaticTicketIDCounter(int staticTicketIDCounter) {Ticket.staticTicketIDCounter = staticTicketIDCounter;}
 
     /* Called automatically if a Ticket object is an argument to System.out.println */
     public String toString(){
