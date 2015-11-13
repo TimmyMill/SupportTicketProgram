@@ -18,6 +18,9 @@ public class TicketManager {
         boolean quit = false;
         readFile(ticketQueue); //read file in when program starts
 
+        /* If there are already open tickets that were pulled in and created from the text file, the ticket queue will not be empty.
+         * TicketIDCounter should start at the next number after the highest ID from the text file */
+
         if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
             int max = 0;
             for (Ticket t : ticketQueue) {
@@ -27,7 +30,6 @@ public class TicketManager {
             }
             Ticket.setStaticTicketIDCounter(max + 1);
         }
-
 
         while(!quit){
 
@@ -162,23 +164,9 @@ public class TicketManager {
             System.out.println("Enter priority of " + description);
             priority = validateIntInput();
 
-            /* If there are already open tickets that were pulled in and created from the text file, the ticket queue will not be empty.
-             * All new tickets should start from the last ticket in the queue's ID and not 1 */
-
-//            if (!ticketQueue.isEmpty()) { //if ticket queue isn't empty
-//                Ticket.setStaticTicketIDCounter(ticketQueue.peekLast().getTicketID() + 1);
-//            }
-////                t.setTicketID(ticketQueue.peekLast().getTicketID() + 1);
-//                Ticket t = new Ticket(description, priority, reporter, dateReported);
-//                addTicketInPriorityOrder(ticketQueue, t);
-//
-//            }
-//            else { //ticket queue is empty
-                Ticket t = new Ticket(description, priority, reporter, dateReported);
-                //ticketQueue.add(t);
-                addTicketInPriorityOrder(ticketQueue, t);
-
-//            }
+            Ticket t = new Ticket(description, priority, reporter, dateReported);
+            //ticketQueue.add(t);
+            addTicketInPriorityOrder(ticketQueue, t);
 
             /* To test, let's print out all of the currently stored tickets */
             printAllTickets(ticketQueue);
@@ -328,6 +316,7 @@ public class TicketManager {
         }
     }
 
+    /* Writes the data from all of the open tickets and resolved tickets into two files */
     protected static void writeToFile(LinkedList<Ticket> ticketQueue) {
         DateFormat dateFormat = new SimpleDateFormat("MMMM_d_yyyy", Locale.ENGLISH); //used to format the date for resolved tickets filename
         Date date = new Date();
