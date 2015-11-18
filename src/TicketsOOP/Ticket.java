@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Ticket {
+public class Ticket implements Comparable<Ticket>{
 
     private int priority;
     private String reporter; //Stores person or department who reported issue
@@ -30,6 +30,22 @@ public class Ticket {
         this.dateReported = date;
         this.ticketID = staticTicketIDCounter;
         staticTicketIDCounter++;
+    }
+
+    //Return a negative number if this ticket should be in front of another ticket in the list – it has a higher priority so should be at the front of the list
+    //Return a positive number if this ticket should be behind another ticket in the list
+    //And it needs to return 0 if the tickets are equivalent when sorted
+
+    public int compareTo(Ticket anotherTicket) {
+
+        if (this.priority < anotherTicket.getPriority() ) {
+            return 1;
+        } else if (this.priority > anotherTicket.getPriority()) {
+            return -1;
+        } else {
+            return 0;
+        }
+
     }
 
     /* Setters & Getters */

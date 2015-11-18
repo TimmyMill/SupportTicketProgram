@@ -144,15 +144,10 @@ public class TicketManager {
         }
     }
 
-    /* Move the adding ticket code to a method */
     protected static void addTickets(LinkedList<Ticket> ticketQueue) {
         Scanner sc = new Scanner(System.in);
-
         boolean moreProblems = true;
-        String description;
-        String reporter;
-
-        /* Let's assume all tickets are created today, for testing. We can change this later if needed */
+        String description, reporter;
         Date dateReported = new Date(); //Default constructor creates date with current date/time
         int priority;
 
@@ -162,13 +157,13 @@ public class TicketManager {
             System.out.println("Who reported this issue?");
             reporter = sc.nextLine();
             System.out.println("Enter priority of " + description);
-            priority = validateIntInput();
+            priority = Integer.parseInt(sc.nextLine());
 
             Ticket t = new Ticket(description, priority, reporter, dateReported);
-            //ticketQueue.add(t);
-            addTicketInPriorityOrder(ticketQueue, t);
+            //addTicketInPriorityOrder(ticketQueue, t);  //Don't need this method any more
+            ticketQueue.add(t);
+            Collections.sort(ticketQueue);   //add a ticket, then sort the list.
 
-            /* To test, let's print out all of the currently stored tickets */
             printAllTickets(ticketQueue);
 
             System.out.println("More tickets to add?\nY or N");
@@ -177,32 +172,6 @@ public class TicketManager {
                 moreProblems = false;
             }
         }
-    }
-    
-    protected static void addTicketInPriorityOrder(LinkedList<Ticket> tickets, Ticket newTicket){
-
-        /* Logic: assume the list is either empty or sorted */
-
-        if (tickets.size() == 0 ) {//Special case - if list is empty, add ticket and return
-            tickets.add(newTicket);
-            return;
-        }
-
-        /* Tickets with the HIGHEST priority number go at the front of the list. (e.g. 5=server on fire) */
-        /* Tickets with the LOWEST value of their priority number (so the lowest priority) go at the end */
-
-        int newTicketPriority = newTicket.getPriority();
-        for (int x = 0; x < tickets.size() ; x++) {    //use a regular for loop so we know which element we are looking at
-
-            //if newTicket is higher or equal priority than the this element, add it in front of this one, and return
-            if (newTicketPriority >= tickets.get(x).getPriority()) {
-                tickets.add(x, newTicket);
-                return;
-            }
-        }
-        /* Will only get here if the ticket is not added in the loop.
-         * If that happens, it must be lower priority than all other tickets. So, add to the end. */
-        tickets.addLast(newTicket);
     }
 
     /* Prints all tickets */
@@ -304,7 +273,7 @@ public class TicketManager {
                     //Create tickets from open tickets text file
                     Ticket t = new Ticket(description, priority, reporter, dateReported);
                     t.setTicketID(ticketID); //sets the ticket ID when object is created so that it doesn't start over from 1
-                    addTicketInPriorityOrder(ticketQueue, t);
+                    addTickets(ticketQueue);
 
                     line = br.readLine();
                 }
