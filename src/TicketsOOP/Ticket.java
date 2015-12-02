@@ -36,6 +36,7 @@ public class Ticket implements Comparable<Ticket>{
     //Return a positive number if this ticket should be behind another ticket in the list
     //And it needs to return 0 if the tickets are equivalent when sorted
 
+    @Override
     public int compareTo(Ticket anotherTicket) {
 
         if (this.priority < anotherTicket.getPriority() ) {
